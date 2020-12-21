@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const port = 5000;
+const ObjectId = require('mongodb').ObjectId;
 
 // include database server
 
@@ -18,22 +19,50 @@ app.use(cors());
 client.connect(err => {
     const todoCollection = client.db("Todo").collection("TodoData");
     console.log("DB Connected");
+
+    //Add todo
     app.post('/addTodo', (req, res) => {
         const todoData = req.body;
         console.log(todoData)
         todoCollection.insertOne(todoData)
             .then(result => {
                 console.log(result.insertedCount);
-                res.send(result.insertedCount)
+                // res.sendStatus(200)
+                res.send(result.insertedCount > 0)
             })
     })
 
-    // load all event data from database
+    // load todos data from database
     app.get('/loadTodo', (req, res) => {
-        // EventCollection.find({})
-        //     .toArray((err, documents) => {
-        //         res.send(documents);
-        //     })
+        todoCollection.find({})
+            .toArray((err, documents) => {
+                res.send(documents);
+            })
+    })
+
+    //delete single todo task
+    app.delete('/deleteTodo', (req, res) => {
+        todoCollection.deleteOne({ _id: ObjectId(req.query.id) })
+            .then(result => {
+                res.send(result)
+            })
+    })
+    //load single event 
+    app.get('/singleTodo', (req, res) => {
+        todoCollection.find({ _id: ObjectId(req.query.id) })
+            .toArray((err, documents) => {
+                res.send(documents[0]);
+            })
+    })
+
+    //update todo
+    app.patch('/updateTodo', (req, res) => {
+        todoCollection.updateOne({ _id: ObjectId(req.query.id) }, {
+            $set: { Title: req.body.Title, Priority: req.body.Priority }
+        })
+            .then(result => {
+                res.send(result)
+            })
     })
     // client.close();
 });
