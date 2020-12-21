@@ -6,8 +6,7 @@ const port = 5000;
 // include database server
 
 const MongoClient = require('mongodb').MongoClient;
-const uri = "mongodb+srv://Fayez:F@yez112233@cluster0.dwklg.mongodb.net/Todo-task?retryWrites=true&w=majority";
-
+const uri = "mongodb+srv://Fayez:todo123@cluster0.5apek.mongodb.net/Todo?retryWrites=true&w=majority";
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
 //========
@@ -17,11 +16,11 @@ app.use(cors());
 
 // connected database
 client.connect(err => {
-    const todoCollection = client.db("Todo-task").collection("todo");
-
-    // post data into database
+    const todoCollection = client.db("Todo").collection("TodoData");
+    console.log("DB Connected");
     app.post('/addTodo', (req, res) => {
         const todoData = req.body;
+        console.log(todoData)
         todoCollection.insertOne(todoData)
             .then(result => {
                 console.log(result.insertedCount);
@@ -29,13 +28,18 @@ client.connect(err => {
             })
     })
 
-
-
+    // load all event data from database
+    app.get('/loadTodo', (req, res) => {
+        // EventCollection.find({})
+        //     .toArray((err, documents) => {
+        //         res.send(documents);
+        //     })
+    })
+    // client.close();
 });
-
 
 app.get('/', function (req, res) {
     res.send("Hello! It's todo api")
 })
 
-app.listen(process.env.PORT || port);
+app.listen(port);
