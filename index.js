@@ -69,7 +69,7 @@ client.connect(err => {
 });
 
 app.get('/', function (req, res) {
-    res.send("Hello! It's todo api")
+    res.send("Hello! It's a todo api..... Author: Fayez")
 })
 
 app.listen(process.env.PORT || PORT);
