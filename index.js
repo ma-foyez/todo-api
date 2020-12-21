@@ -1,13 +1,14 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+require('dotenv').config()
 const cors = require('cors');
-const port = 5000;
+const PORT = 5000;
 const ObjectId = require('mongodb').ObjectId;
 
 // include database server
 
 const MongoClient = require('mongodb').MongoClient;
-const uri = "mongodb+srv://Fayez:todo123@cluster0.5apek.mongodb.net/Todo?retryWrites=true&w=majority";
+const uri = `mongodb+srv://Fayez:todo123@cluster0.5apek.mongodb.net/Todo?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
 //========
@@ -71,4 +72,4 @@ app.get('/', function (req, res) {
     res.send("Hello! It's todo api")
 })
 
-app.listen(port);
+app.listen(process.env.PORT || PORT);
